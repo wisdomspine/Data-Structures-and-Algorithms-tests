@@ -1,1 +1,0 @@
-import { arrayMultiplier } from './algorithms/';

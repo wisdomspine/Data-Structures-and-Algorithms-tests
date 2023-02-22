@@ -31,37 +31,38 @@
  *
  */
 
-export function arrayMultiplier(array: number[]): (index: number) => number {
+function arrayMultiplier(array: number[]): (index: number) => number {
   // keep track of multiplied indices to help with subsequent calls
-  const trackedCalls:Map<number, number> = new Map();
+  const trackedCalls: Map<number, number> = new Map();
 
-  return (index:number){
+  return (index: number) => {
     let product: number = 1;
-    if(index > (array.length - 1)){
-      index = array.length -1;
+    if (index > array.length - 1) {
+      index = array.length - 1;
     }
-    if(index < 0){
+    if (index < 0) {
       return product;
     }
 
-    let counter:number = 0;
-    const stack:number[] = [];
+    let counter: number = index;
+    const stack: number[] = [];
 
-    while(!trackedCalls.has(counter) && (counter >= 0) ){
+    while (!trackedCalls.has(counter) && counter >= 0) {
       stack.push(counter);
+      --counter;
     }
 
     // there was call made for the current value of counter before
-    if(counter >= 0){
-      product = trackedCalls[counter];
+    if (counter >= 0) {
+      product = trackedCalls.get(counter) as number;
     }
 
-    while(stack.length != 0){
-      counter = stack.pop();
+    while (stack.length != 0) {
+      counter = stack.pop() as number;
       product *= array[counter];
-      trackedCalls[counter] = product;
+      trackedCalls.set(counter, product);
     }
 
-    return trackedCalls[counter];
-  }
+    return trackedCalls.get(counter) as number;
+  };
 }
