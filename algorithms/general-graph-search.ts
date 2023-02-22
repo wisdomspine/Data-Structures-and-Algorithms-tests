@@ -15,21 +15,20 @@ import { Vertex } from '../graph/vertex';
  * return the accumulated reachable vertices
  */
 export function generalGraphSearch(rootVertex: Vertex) {
-  rootVertex.isVisited = true;
-  const reachableVertices = [rootVertex];
-  const edges = rootVertex.edges;
+  const visitedVertices: Set<Vertex> = new Set();
+  const queue: Vertex[] = [];
 
-  let current: Edge;
-  while (edges.length > 0) {
-    current = edges.shift();
-    if (current.source.isVisited && !current.destination.isVisited) {
-      edges.push(...current.destination.edges);
-      current.destination.isVisited = true;
-      reachableVertices.push(current.destination);
-    } else if (!current.source.isVisited && current.destination.isVisited) {
-      edges.push(...current.source.edges);
-      current.source.isVisited = true;
-      reachableVertices.push(current.source);
+  visitedVertices.add(rootVertex);
+  queue.push(rootVertex);
+
+  let current: Vertex;
+  while (queue.length > 0) {
+    current = queue.shift();
+    for (const neighbour of current.neighbours) {
+      if (!visitedVertices.has(neighbour)) {
+        visitedVertices.add(neighbour);
+        queue.push(neighbour);
+      }
     }
   }
   return reachableVertices;
